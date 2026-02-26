@@ -1,16 +1,21 @@
 import { useState } from "react";
-import type { ICategory, IProduct } from "../Interfaces/ProductInterface";
 import { getRequest } from "../services/fetchInstance";
 import { Environment } from "../services/environment";
+import type { IProduct } from "../Interfaces/ProductInterface";
+import type { ICategories } from "../Interfaces/CategoriesInterface";
+import { useNavigate } from "react-router";
 
 export const useProducts = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
+  const [categories, setCategories] = useState<ICategories[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
-  const [categories, setCategories] = useState<ICategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedSort, setSelectedSort] = useState<string>("default");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const params = new URLSearchParams(window.location.search);
+  const pageParam = params.get("page") || "1";
+  const navigate = useNavigate();
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -35,17 +40,18 @@ export const useProducts = () => {
   };
 
   const sortDESC = (a: IProduct, b: IProduct) => b.price - a.price;
+  const sortASC = (a: IProduct, b: IProduct) => a.price - b.price;
 
   const filterByCategory = (category: string) => {
     setSelectedCategory(category);
 
     const baseFiltered =
       category === "all"
-        ? [...products]
+        ? [...products.slice(0, 10)]
         : products.filter((p) => p.category === category);
 
     const finalFiltered = [...baseFiltered];
-    if (selectedSort === "ASC") finalFiltered.sort();
+    if (selectedSort === "ASC") finalFiltered.sort(sortASC);
     else if (selectedSort === "DESC") finalFiltered.sort(sortDESC);
 
     setFilteredProducts(finalFiltered);
@@ -56,12 +62,12 @@ export const useProducts = () => {
 
     const baseFiltered =
       selectedCategory === "all"
-        ? [...products]
+        ? [...products.slice(0, 10)]
         : products.filter((p) => p.category === selectedCategory);
 
     const finalFiltered = [...baseFiltered];
 
-    if (sort === "ASC") finalFiltered.sort();
+    if (sort === "ASC") finalFiltered.sort(sortASC);
     else if (sort === "DESC") finalFiltered.sort(sortDESC);
 
     setFilteredProducts(finalFiltered);
@@ -78,6 +84,9 @@ export const useProducts = () => {
     categories,
     selectedSort,
     filterByPrice,
-    setFilteredProducts
+    setFilteredProducts,
+    pageParam,
+    params,
+    navigate,
   };
 };

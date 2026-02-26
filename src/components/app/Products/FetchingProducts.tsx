@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useProducts } from "../../core/hooks/useProductsHook";
+
 import {
   Pagination,
   PaginationContent,
@@ -7,13 +7,13 @@ import {
   PaginationLink,
 } from "@/components/ui/pagination";
 import { ProductsList } from "./ProductsList";
-import { useNavigate } from "react-router";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { useProducts } from "@/core/hooks/useProductsHook";
+import { CardSkeleton } from "@/components/shared/CardSkeleton";
+
 export const FetchingProducts = () => {
-  const params = new URLSearchParams(window.location.search);
-  const navigate = useNavigate();
-  const pageParam = params.get("page") || "1";
 
   const {
     loading,
@@ -27,11 +27,24 @@ export const FetchingProducts = () => {
     filterByPrice,
     products,
     setFilteredProducts,
+    navigate,
+    pageParam,
+    params
   } = useProducts();
 
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 my-5">
+        {Array.from({ length: 8 }).map((_, index) => (
+          <CardSkeleton  key={index} />
+        ))}
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -45,14 +58,6 @@ export const FetchingProducts = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-xl text-gray-600">No products found.</div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-xl text-gray-600">Loading products...</div>
       </div>
     );
   }
@@ -137,7 +142,7 @@ export const FetchingProducts = () => {
               </PaginationItem>
             ))}
             <PaginationItem>
-              <ChevronRight size={22} strokeWidth={2}/>
+              <ChevronRight size={22} strokeWidth={2} />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

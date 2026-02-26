@@ -1,7 +1,10 @@
 import type { IProduct } from "@/core/Interfaces/ProductInterface";
+import { useCartStore } from "@/core/store/cartStore";
 import { Link } from "react-router";
 
 export const ProductsList = ({ product }: { product: IProduct }) => {
+  const addToCart = useCartStore((state) => state.addToCart);
+
   return (
     <div
       key={product.id}
@@ -37,6 +40,17 @@ export const ProductsList = ({ product }: { product: IProduct }) => {
           >
             View Details
           </Link>
+        </div>
+
+        <div className="text-center my-5 w-full">
+          <button
+            onClick={() => {
+              addToCart(product);
+            }}
+            className="w-full px-4 cursor-pointer py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
