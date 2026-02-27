@@ -10,11 +10,13 @@ export const ProductsList = ({ product }: { product: IProduct }) => {
       key={product.id}
       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
     >
-      <div className="relative h-48 bg-gray-200">
+      <div className="h-48 bg-gray-200">
         <img
           src={product.image}
           alt={product.title}
-          className="w-full h-full object-cover"
+          width={300}
+          height={300}
+          className="w-full h-full object-contain"
         />
       </div>
 

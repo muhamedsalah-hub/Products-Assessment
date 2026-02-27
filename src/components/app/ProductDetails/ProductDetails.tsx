@@ -6,13 +6,13 @@ import { Link } from "react-router";
 import { CardSkeleton } from "../../shared/CardSkeleton";
 
 export const ProductDetails = () => {
-  const { product, loading, error, fetchProduct, productId } =
+  const { product, loading, error, fetchProduct } =
     useProductDetails();
   const addToCart = useCartStore((state) => state.addToCart);
 
   useEffect(() => {
     fetchProduct();
-  }, [productId]);
+  }, []);
 
   if (loading) {
     return (
@@ -75,11 +75,13 @@ export const ProductDetails = () => {
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
             {/*         Left column             */}
-            <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden">
+            <div className=" aspect-square bg-gray-200 rounded-lg overflow-hidden">
               <img
                 src={product.image}
                 alt={product.title}
-                className="w-full h-full object-cover"
+                width={300}
+                height={300}
+                className="w-full h-full object-contain"
               />
             </div>
 
