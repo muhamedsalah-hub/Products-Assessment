@@ -1,18 +1,43 @@
 import { BrowserRouter, Route, Routes } from "react-router";
+import { lazy } from "react";
 import "./App.css";
 
-import { ProductDetails } from "./components/app/ProductDetails/ProductDetails";
-import { NotFound } from "./components/shared/NotFound";
-import { CartPage } from "./components/app/Cart/CartPage";
 import { ProductsPage } from "./components/app/Products/ProductsPage";
-import { AddProductPage } from "./components/dashboard/AddProductPage";
+import { Navbar } from "./components/shared/Navbar";
+import { NotFound } from "./components/shared/NotFound";
 import { ToastContainer } from "react-toastify";
 import { UserContextProvider } from "./core/contexts/UserContextProvider";
-import { LoginPage } from "./components/Auth/LoginPage";
 import { ProtectedRoute } from "./core/guard/ProtectedRoute";
-import { Navbar } from "./components/shared/Navbar";
-import { SignUp } from "./components/Auth/SignupPage";
 import { LoggedInProtectedRoute } from "./core/guard/LoggedInProtectedRoute";
+
+
+const CartComponent = lazy(() =>
+  import("./components/app/Cart/CartPage").then((module) => ({
+    default: module.CartPage,
+  })),
+);
+const AddProductComponent = lazy(() =>
+  import("./components/dashboard/AddProductPage").then((module) => ({
+    default: module.AddProductPage,
+  })),
+);
+const LoginComponent = lazy(() =>
+  import("./components/Auth/LoginPage").then((module) => ({
+    default: module.LoginPage,
+  })),
+);
+const SignupComponent = lazy(() =>
+  import("./components/Auth/SignupPage").then((module) => ({
+    default: module.SignUp,
+  })),
+);
+
+const ProductDetailsComponent = lazy(() =>
+  import("./components/app/ProductDetails/ProductDetails").then((module) => ({
+    default: module.ProductDetails,
+  })),
+);
+
 
 function App() {
   return (
@@ -25,7 +50,7 @@ function App() {
               path="/signup"
               element={
                 <LoggedInProtectedRoute>
-                  <SignUp />
+                  <SignupComponent />
                 </LoggedInProtectedRoute>
               }
             />
@@ -33,16 +58,16 @@ function App() {
               path="/login"
               element={
                 <LoggedInProtectedRoute>
-                  <LoginPage />
+                  <LoginComponent />
                 </LoggedInProtectedRoute>
               }
             />
-            <Route path="/product/:productId" element={<ProductDetails />} />
+            <Route path="/product/:productId" element={<ProductDetailsComponent />} />
             <Route
               path="/cart"
               element={
                 <ProtectedRoute>
-                  <CartPage />
+                  <CartComponent />
                 </ProtectedRoute>
               }
             />
@@ -50,7 +75,7 @@ function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <AddProductPage />
+                  <AddProductComponent />
                 </ProtectedRoute>
               }
             />
