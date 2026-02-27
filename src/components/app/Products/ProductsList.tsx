@@ -16,6 +16,7 @@ export const ProductsList = ({ product }: { product: IProduct }) => {
           alt={product.title}
           width={300}
           height={300}
+          loading="lazy"
           className="w-full h-full object-contain"
         />
       </div>
