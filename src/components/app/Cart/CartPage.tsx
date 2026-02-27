@@ -1,18 +1,15 @@
 import { useCartStore } from "@/core/store/cartStore";
 import { ArrowLeft, MoveLeft } from "lucide-react";
 import { Link } from "react-router";
-import CartItems from "./CartItems";
 import { useEffect } from "react";
+import { CartItems } from "./CartItems";
 
 export const CartPage = () => {
   const { clearCart, getTotalPrice, cartItems, totalPrice } = useCartStore();
 
-  console.log(cartItems);
-
-
   useEffect(() => {
     getTotalPrice();
-  }, [cartItems]);
+  }, []);
 
   if (cartItems.length === 0) {
     return (
@@ -81,7 +78,7 @@ export const CartPage = () => {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="divide-y divide-gray-200">
             {cartItems.map((item) => (
-              <CartItems key={item.id} item={item} />
+              <CartItems key={item.product.id} item={item} />
             ))}
           </div>
         </div>

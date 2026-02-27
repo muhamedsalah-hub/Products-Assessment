@@ -12,6 +12,7 @@ import { LoginPage } from "./components/Auth/LoginPage";
 import { ProtectedRoute } from "./core/guard/ProtectedRoute";
 import { Navbar } from "./components/shared/Navbar";
 import { SignUp } from "./components/Auth/SignupPage";
+import { LoggedInProtectedRoute } from "./core/guard/LoggedInProtectedRoute";
 
 function App() {
   return (
@@ -20,8 +21,22 @@ function App() {
         <Routes>
           <Route path="/" element={<Navbar />}>
             <Route index element={<ProductsPage />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/signup"
+              element={
+                <LoggedInProtectedRoute>
+                  <SignUp />
+                </LoggedInProtectedRoute>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <LoggedInProtectedRoute>
+                  <LoginPage />
+                </LoggedInProtectedRoute>
+              }
+            />
             <Route path="/product/:productId" element={<ProductDetails />} />
             <Route
               path="/cart"

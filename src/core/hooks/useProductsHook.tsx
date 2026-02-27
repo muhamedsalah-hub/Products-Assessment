@@ -3,19 +3,16 @@ import { getRequest } from "../services/fetchInstance";
 import { Environment } from "../services/environment";
 import type { IProduct } from "../Interfaces/ProductInterface";
 import type { ICategories } from "../Interfaces/CategoriesInterface";
-import { useNavigate } from "react-router";
 
 export const useProducts = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
+  const [page, setPage] = useState<number>(1);
   const [categories, setCategories] = useState<ICategories[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedSort, setSelectedSort] = useState<string>("default");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const params = new URLSearchParams(window.location.search);
-  const pageParam = params.get("page") || "1";
-  const navigate = useNavigate();
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -45,10 +42,12 @@ export const useProducts = () => {
   const filterByCategory = (category: string) => {
     setSelectedCategory(category);
 
-    const baseFiltered =
-      category === "all"
-        ? [...products.slice(0, 10)]
-        : products.filter((p) => p.category === category);
+    let baseFiltered;
+    if (category === "all") {
+      baseFiltered = getPaginatedProducts(page);
+    } else {
+      baseFiltered = products.filter((p) => p.category === category);
+    }
 
     const finalFiltered = [...baseFiltered];
     if (selectedSort === "ASC") finalFiltered.sort(sortASC);
@@ -60,10 +59,12 @@ export const useProducts = () => {
   const filterByPrice = (sort: string) => {
     setSelectedSort(sort);
 
-    const baseFiltered =
-      selectedCategory === "all"
-        ? [...products.slice(0, 10)]
-        : products.filter((p) => p.category === selectedCategory);
+    let baseFiltered;
+    if (selectedCategory === "all") {
+      baseFiltered = getPaginatedProducts(page);
+    } else {
+      baseFiltered = products.filter((p) => p.category === selectedCategory);
+    }
 
     const finalFiltered = [...baseFiltered];
 
@@ -71,6 +72,17 @@ export const useProducts = () => {
     else if (sort === "DESC") finalFiltered.sort(sortDESC);
 
     setFilteredProducts(finalFiltered);
+  };
+
+  const setPaginatedProducts = (page: number) => {
+    const start = (page - 1) * 10;
+    const end = start + 10;
+    setFilteredProducts([...products.slice(start, end)]);
+  };
+  const getPaginatedProducts = (page: number) => {
+    const start = (page - 1) * 10;
+    const end = start + 10;
+    return products.slice(start, end);
   };
 
   return {
@@ -85,8 +97,9 @@ export const useProducts = () => {
     selectedSort,
     filterByPrice,
     setFilteredProducts,
-    pageParam,
-    params,
-    navigate,
+    getPaginatedProducts,
+    setPaginatedProducts,
+    page,
+    setPage,
   };
 };

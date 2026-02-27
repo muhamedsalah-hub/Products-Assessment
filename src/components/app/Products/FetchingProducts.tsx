@@ -14,8 +14,8 @@ import { useProducts } from "@/core/hooks/useProductsHook";
 import { CardSkeleton } from "@/components/shared/CardSkeleton";
 
 export const FetchingProducts = () => {
-
   const {
+  products,
     loading,
     error,
     fetchProducts,
@@ -25,11 +25,9 @@ export const FetchingProducts = () => {
     categories,
     selectedSort,
     filterByPrice,
-    products,
-    setFilteredProducts,
-    navigate,
-    pageParam,
-    params
+    setPaginatedProducts,
+    page,
+    setPage,
   } = useProducts();
 
   useEffect(() => {
@@ -40,7 +38,7 @@ export const FetchingProducts = () => {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 my-5">
         {Array.from({ length: 8 }).map((_, index) => (
-          <CardSkeleton  key={index} />
+          <CardSkeleton key={index} />
         ))}
       </div>
     );
@@ -124,23 +122,22 @@ export const FetchingProducts = () => {
             <PaginationItem>
               <ChevronLeft size={22} strokeWidth={2} />
             </PaginationItem>
-            {Array.from({ length: products.length / 10 }).map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  className="cursor-pointer"
-                  isActive={pageParam == (index + 1).toString()}
-                  onClick={() => {
-                    params.set("page", (index + 1).toString());
-                    setFilteredProducts(
-                      products.slice(index * 10, (index + 1) * 10),
-                    );
-                    navigate(`?${params.toString()}`);
-                  }}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
+            {Array.from({ length: products.length / 10 }).map((_, index) => {
+              return (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    className="cursor-pointer"
+                    isActive={page == index + 1}
+                    onClick={() => {
+                      setPage(index + 1);
+                      setPaginatedProducts(index+1)
+                    }}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              );
+            })}
             <PaginationItem>
               <ChevronRight size={22} strokeWidth={2} />
             </PaginationItem>
