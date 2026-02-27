@@ -96,8 +96,6 @@ export const useProducts = () => {
     categories,
     selectedSort,
     filterByPrice,
-    setFilteredProducts,
-    getPaginatedProducts,
     setPaginatedProducts,
     page,
     setPage,
